@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------
 //  TinyCircuits Dual Motor Driver Basic Example
-//  Last Updated 30 July 2015
+//  Last Updated 11 July 2018
 //  
 //  This example code shows basic usage of the ASD2302 Dual Motor Driver TinyShield.
 //  The library intance is created with the hardware address of the motor driver
@@ -13,7 +13,7 @@
 //  The board uses the ATtiny841 microcontroller and has direct register access-
 //  so just about any of the internal peripherals could be put to use.
 //
-//  Written by Ben Rose, TinyCircuits http://Tiny-Circuits.com
+//  Written by Ben Rose, TinyCircuits http://tinycircuits.com
 //
 //-------------------------------------------------------------------------------
 
@@ -21,19 +21,33 @@
 #include <Wire.h>
 #include <MotorDriver.h>
 
-MotorDriver motor(0);//value passed is the address- remove resistor R1 for 1, R2 for 2, R1 and R2 for 3
+MotorDriver motor(NO_R_REMOVED);//this value affects the I2C address, which can be changed by
+                                //removing resistors R1 or R2. Then the corresponding R1_REMOVED,
+                                //R2_REMOVED, R1_R2_REMOVED can be set.
+                                //Default is NO_R_REMOVED
 
-int maxPWM=10000;
-int steps=100;
+
+#if defined (ARDUINO_ARCH_AVR)
+#define SerialMonitorInterface Serial
+#elif defined(ARDUINO_ARCH_SAMD)
+#define SerialMonitorInterface SerialUSB
+#endif
+
+
+int maxPWM=1000;
+int steps=10;
 int stepSize=maxPWM/steps;
 
 void setup(){
-  Serial.begin(9600);
+  SerialMonitorInterface.begin(9600);
   Wire.begin();
+  while(!SerialMonitorInterface)//This will block until the Serial Monitor is opened on TinyScreen+/TinyZero platform!
+  
+  
   //The value passed to begin() is the maximum PWM value, which is 16 bit(up to 65535)
-  //This value also determines the output frequency- by default, 8MHz divided by the maxPWM value
+  //This value also determines the output frequency- by default, 1MHz divided by the maxPWM value
   if(motor.begin(maxPWM)){
-    Serial.println("Motor driver not detected!");
+    SerialMonitorInterface.println("Motor driver not detected!");
     while(1);
   }
   //The failsafe turns off motors if a command is not sent in a certain amount of time.

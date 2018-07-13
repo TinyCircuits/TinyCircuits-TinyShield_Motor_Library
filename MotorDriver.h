@@ -74,7 +74,25 @@ The latest version of this library can be found at https://tiny-circuits.com/
 #define MODE_COMMAND 0xAC
 
 #define FIRMWARE_REVISION_REG 0x19
-#define EXPECTED_FIRMWARE 0x1A
+#define EXPECTED_MOTOR_FIRMWARE 0x1A
+#define EXPECTED_SERVO_FIRMWARE 0x2A
+
+#define NO_R_REMOVED        0
+#define R1_REMOVED          1
+#define R2_REMOVED          2
+#define R1_R2_REMOVED       3
+#define R3_REMOVED          4
+#define R1_R3_REMOVED       5
+#define R2_R3_REMOVED       6
+#define R1_R2_R3_REMOVED    7
+#define R4_REMOVED          8
+#define R1_R4_REMOVED       9
+#define R2_R4_REMOVED       10
+#define R1_R2_R4_REMOVED    11
+#define R3_R4_REMOVED       12
+#define R1_R3_R4_REMOVED    13
+#define R2_R3_R4_REMOVED    14
+#define R1_R2_R3_R4_REMOVED 15
 
 class MotorDriver {
 public:
@@ -89,6 +107,7 @@ void writeCommand(uint8_t, uint16_t, uint16_t, uint16_t, uint16_t);
 uint8_t read(uint8_t);
 void setFailsafe(uint16_t ms);
 void setMotor(uint8_t, int16_t);
+void setServo(uint8_t, uint16_t);
 uint8_t address;
 };
 #endif
